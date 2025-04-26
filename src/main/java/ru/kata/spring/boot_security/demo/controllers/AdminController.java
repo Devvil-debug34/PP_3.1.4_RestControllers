@@ -27,25 +27,25 @@ public class AdminController {
     @GetMapping
     public String listUsers(ModelMap model) {
         model.addAttribute("users", userService.findAll());
-        return "user-list";
+        return "userListAdmin";
     }
 
     @GetMapping("/add")
     public String addUserForm(ModelMap model) {
         model.addAttribute("user", new User());
         model.addAttribute("allRoles", roleService.findAll());
-        return "user-add";
+        return "userAddAdmin";
     }
 
     @PostMapping("/add")
     public String addUser(@ModelAttribute("user") @Valid User user, BindingResult result) {
         if (result.hasErrors()) {
-            return "user-add";
+            return "userAddAdmin";
         }
         // email verification
         Optional<User> userWithSameEmail = userService.findByEmail(user.getEmail());
         if (userWithSameEmail.isPresent()) {
-            return "user-add";
+            return "userAddAdmin";
         }
         // Проверка: если роли не выбраны, добавляется роль по умолчанию
         userService.add(user);
@@ -57,20 +57,20 @@ public class AdminController {
         User user = userService.findById(id);
         model.addAttribute("user", user);
         model.addAttribute("allRoles", roleService.findAll());
-        return "user-edit";
+        return "userEditAdmin";
     }
 
     @PostMapping("/edit")
     public String editUser(@RequestParam("id") int id, @ModelAttribute("user") @Valid User user, BindingResult result) {
         if (result.hasErrors()) {
-            return "user-edit";
+            return "userEditAdmin";
         }
         // email check
         Optional<User> userWithSameEmail = userService.findByEmail(user.getEmail());
         if (userWithSameEmail.isPresent() && userWithSameEmail.get().getId() != id) {
             //  email not
             result.rejectValue("email", "error.user", "Этот email уже используется другим пользователем.");
-            return "user-edit";
+            return "userEditAdmin";
         }
         userService.update(id, user);
         return "redirect:/admin";

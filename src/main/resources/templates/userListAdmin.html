@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Admin panel</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .table-no-vertical td,
+        .table-no-vertical th {
+            border-left: none !important;
+            border-right: none !important;
+        }
+    </style>
+</head>
+<body class="bg-light">
+
+<!-- Верхняя панель -->
+<nav class="navbar navbar-dark bg-dark justify-content-between px-3">
+    <div class="text-white">
+        <strong>admin@mail.ru</strong>
+        <span class="ml-2">with roles: <strong>ADMIN USER</strong></span>
+    </div>
+    <form th:action="@{/logout}" method="post">
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+        <button type="submit" class="btn btn-outline-light">Logout</button>
+    </form>
+</nav>
+
+<div class="container-fluid">
+    <div class="row">
+
+        <!-- Боковая панель -->
+        <div class="col-md-2 bg-white vh-100 border-right p-3">
+            <ul class="nav flex-column nav-pills">
+                <li class="nav-item">
+                    <a class="nav-link active" href="#">Admin</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">User</a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Основной контент -->
+        <div class="col-md-10 p-4">
+            <h2>Admin panel</h2>
+
+            <!-- Табы -->
+            <ul class="nav nav-tabs mt-3">
+                <li class="nav-item">
+                    <a class="nav-link active" href="#">Users table</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" onclick="openModal('/admin/add')">New User</a>
+                </li>
+            </ul>
+
+            <div class="mt-3">
+                <h5>All users</h5>
+
+                <table class="table table-bordered table-hover table-no-vertical">
+                    <thead class="thead-light">
+                    <tr>
+                        <th>ID</th>
+                        <th>First Name</th>
+                        <th>Last Name</th>
+                        <th>Email</th>
+                        <th>Role</th>
+                        <th>Edit</th>
+                        <th>Delete</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>2</td>
+                        <td>admin</td>
+                        <td>admin</td>
+                        <td>admin@mail.ru</td>
+                        <td>ADMIN USER</td>
+                        <td>
+                            <button class="btn btn-info btn-sm" onclick="openModal('/admin/edit?id=2')">Edit</button>
+                        </td>
+                        <td>
+                            <button class="btn btn-danger btn-sm" onclick="deleteUser(2)">Delete</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td>user</td>
+                        <td>user</td>
+                        <td>user@mail.ru</td>
+                        <td>USER</td>
+                        <td>
+                            <button class="btn btn-info btn-sm" onclick="openModal('/admin/edit?id=3')">Edit</button>
+                        </td>
+                        <td>
+                            <button class="btn btn-danger btn-sm" onclick="deleteUser(3)">Delete</button>
+                        </td>
+                    </tr>
+                    </tbody>
+
+                </table>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- Модальное окно -->
+<div class="modal fade" id="dynamicModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content" id="modalContent">
+            <!-- Контент будет подгружаться сюда -->
+        </div>
+    </div>
+</div>
+
+<!-- Скрипты -->
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+<script>
+    function openModal(url) {
+        fetch(url)
+            .then(response => response.text())
+            .then(html => {
+                document.getElementById('modalContent').innerHTML = html;
+                $('#dynamicModal').modal('show');
+            })
+            .catch(error => console.error('Ошибка загрузки модального окна:', error));
+    }
+</script>
+
+<script>
+    function deleteUser(id) {
+        if (confirm('Вы уверены, что хотите удалить пользователя?')) {
+            fetch('/admin/delete?id=' + id, { method: 'GET' })
+                .then(response => {
+                    if (response.redirected) {
+                        window.location.href = response.url;
+                    }
+                })
+                .catch(error => console.error('Ошибка при удалении пользователя:', error));
+        }
+    }
+</script>
+
+</body>
+</html>
+

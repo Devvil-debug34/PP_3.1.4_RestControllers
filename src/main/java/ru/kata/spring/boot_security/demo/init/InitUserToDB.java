@@ -16,13 +16,11 @@ import java.util.Set;
 public class InitUserToDB {
     private final UserService userService;
     private final RoleService roleService;
-    private final PasswordEncoder passwordEncoder;
 
 
-    public InitUserToDB(UserService userService, RoleService roleService, PasswordEncoder passwordEncoder) {
+    public InitUserToDB(UserService userService, RoleService roleService) {
         this.userService = userService;
         this.roleService = roleService;
-        this.passwordEncoder = passwordEncoder;
     }
 
     @PostConstruct
