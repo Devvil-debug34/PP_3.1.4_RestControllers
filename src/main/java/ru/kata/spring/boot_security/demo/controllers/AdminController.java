@@ -40,36 +40,17 @@ public class AdminController {
     }
 
     @PostMapping("/add")
-    public String addUser(@ModelAttribute("user") @Valid User user,
-                          BindingResult result,
-                          @RequestParam("roles") List<String> roleNames,
-                          Model model) {
-
-        System.out.println("Получены роли из формы:");
-        for (String roleName : roleNames) {
-            System.out.println(" - " + roleName);
-        }
-
-        if (result.hasErrors()) {
-            model.addAttribute("allRoles", roleService.findAll());
-            return "userAddAdmin";
-        }
-
-        Optional<User> userWithSameEmail = userService.findByEmail(user.getEmail());
-        if (userWithSameEmail.isPresent()) {
-            model.addAttribute("allRoles", roleService.findAll());
-            return "userAddAdmin";
-        }
-
+    public String addUser(@ModelAttribute("user") User user,
+                          @RequestParam("roles") List<String> roleNames) {
         Set<Role> roles = new HashSet<>();
         for (String roleName : roleNames) {
-            roles.add(roleService.findByName(roleName));
+            roles.add(roleService.findByName(roleName)); // Найти роли по ИМЕНИ
         }
-        user.setRoles(roles);
-
-        userService.add(user);
+        user.setRoles(roles); // Установить роли в юзера
+        userService.add(user); // Сохранить юзера
         return "redirect:/admin";
     }
+
 
 
 
