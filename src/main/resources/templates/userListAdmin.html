@@ -37,7 +37,7 @@
                     <a class="nav-link active" href="#">Admin</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">User</a>
+                    <a class="nav-link" href="/user">User</a>
                 </li>
             </ul>
         </div>
@@ -72,35 +72,30 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr>
-                        <td>2</td>
-                        <td>admin</td>
-                        <td>admin</td>
-                        <td>admin@mail.ru</td>
-                        <td>ADMIN USER</td>
+                    <tr th:each="user : ${users}">
+                        <td th:text="${user.id}">1</td>
+                        <td th:text="${user.firstName}">FirstName</td>
+                        <td th:text="${user.lastName}">LastName</td>
+                        <td th:text="${user.email}">email@example.com</td>
                         <td>
-                            <button class="btn btn-info btn-sm" onclick="openModal('/admin/edit?id=2')">Edit</button>
+                            <th:block th:each="role : ${user.roles}">
+                                <span th:text="${role.name}" class="mr-1"></span>
+                            </th:block>
                         </td>
                         <td>
-                            <button class="btn btn-danger btn-sm" onclick="deleteUser(2)">Delete</button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>3</td>
-                        <td>user</td>
-                        <td>user</td>
-                        <td>user@mail.ru</td>
-                        <td>USER</td>
-                        <td>
-                            <button class="btn btn-info btn-sm" onclick="openModal('/admin/edit?id=3')">Edit</button>
+                            <button class="btn btn-info btn-sm" th:onclick="'openModal(\'/admin/edit?id=' + ${user.id} + '\')'">
+                                Edit
+                            </button>
                         </td>
                         <td>
-                            <button class="btn btn-danger btn-sm" onclick="deleteUser(3)">Delete</button>
+                            <button class="btn btn-danger btn-sm" th:onclick="'deleteUser(' + ${user.id} + ')'">
+                                Delete
+                            </button>
                         </td>
                     </tr>
                     </tbody>
-
                 </table>
+
             </div>
 
         </div>
@@ -127,10 +122,33 @@
             .then(html => {
                 document.getElementById('modalContent').innerHTML = html;
                 $('#dynamicModal').modal('show');
+
+                // НАВЕШАТЬ ОБРАБОТЧИК НА ФОРМУ
+                const form = document.querySelector('#modalContent form');
+                if (form) {
+                    form.addEventListener('submit', async function (event) {
+                        event.preventDefault(); // Остановить обычную отправку
+
+                        const formData = new FormData(form);
+
+                        const response = await fetch(form.action, {
+                            method: form.method,
+                            body: formData
+                        });
+
+                        if (response.redirected) {
+                            window.location.href = response.url; // если сервер редиректит - перейти
+                        } else {
+                            const text = await response.text();
+                            document.getElementById('modalContent').innerHTML = text; // если ошибка валидации - заново отобразить форму
+                        }
+                    });
+                }
             })
             .catch(error => console.error('Ошибка загрузки модального окна:', error));
     }
 </script>
+
 
 <script>
     function deleteUser(id) {

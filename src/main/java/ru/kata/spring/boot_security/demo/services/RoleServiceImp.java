@@ -32,6 +32,13 @@ public class RoleServiceImp implements RoleService {
 
     @Override
     public Role findByName(String name) {
-        return (Role) roleRepository.findByName(name);
+        List<Role> roles = roleRepository.findByName(name);
+        if (roles.isEmpty()) {
+            throw new RuntimeException("Role not found: " + name);
+        }
+        return roles.get(0); // берем первый элемент
     }
+
+
+
 }

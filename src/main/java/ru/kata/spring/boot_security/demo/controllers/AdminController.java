@@ -2,15 +2,17 @@ package ru.kata.spring.boot_security.demo.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import ru.kata.spring.boot_security.demo.models.Role;
 import ru.kata.spring.boot_security.demo.models.User;
 import ru.kata.spring.boot_security.demo.services.RoleService;
 import ru.kata.spring.boot_security.demo.services.UserService;
 
 import javax.validation.Valid;
-import java.util.Optional;
+import java.util.*;
 
 @Controller
 @RequestMapping("/admin")
@@ -38,19 +40,38 @@ public class AdminController {
     }
 
     @PostMapping("/add")
-    public String addUser(@ModelAttribute("user") @Valid User user, BindingResult result) {
+    public String addUser(@ModelAttribute("user") @Valid User user,
+                          BindingResult result,
+                          @RequestParam("roles") List<String> roleNames,
+                          Model model) {
+
+        System.out.println("Получены роли из формы:");
+        for (String roleName : roleNames) {
+            System.out.println(" - " + roleName);
+        }
+
         if (result.hasErrors()) {
+            model.addAttribute("allRoles", roleService.findAll());
             return "userAddAdmin";
         }
-        // email verification
+
         Optional<User> userWithSameEmail = userService.findByEmail(user.getEmail());
         if (userWithSameEmail.isPresent()) {
+            model.addAttribute("allRoles", roleService.findAll());
             return "userAddAdmin";
         }
-        // Проверка: если роли не выбраны, добавляется роль по умолчанию
+
+        Set<Role> roles = new HashSet<>();
+        for (String roleName : roleNames) {
+            roles.add(roleService.findByName(roleName));
+        }
+        user.setRoles(roles);
+
         userService.add(user);
         return "redirect:/admin";
     }
+
+
 
     @GetMapping("/edit")
     public String editUserForm(@RequestParam("id") int id, ModelMap model) {
