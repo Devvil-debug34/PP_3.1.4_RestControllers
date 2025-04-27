@@ -1,7 +1,6 @@
 package ru.kata.spring.boot_security.demo.services;
 
 
-
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.kata.spring.boot_security.demo.dao.RoleRepository;
@@ -36,9 +35,6 @@ public class RoleServiceImp implements RoleService {
         if (roles.isEmpty()) {
             throw new RuntimeException("Role not found: " + name);
         }
-        return roles.get(0); // берем первый элемент
+        return roles.get(0);
     }
-
-
-
 }

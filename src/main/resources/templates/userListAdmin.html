@@ -22,7 +22,7 @@
         <span class="ml-2">with roles: <strong>ADMIN USER</strong></span>
     </div>
     <form th:action="@{/logout}" method="post">
-        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
         <button type="submit" class="btn btn-outline-light">Logout</button>
     </form>
 </nav>
@@ -83,7 +83,8 @@
                             </th:block>
                         </td>
                         <td>
-                            <button class="btn btn-info btn-sm" th:onclick="'openModal(\'/admin/edit?id=' + ${user.id} + '\')'">
+                            <button class="btn btn-info btn-sm"
+                                    th:onclick="'openModal(\'/admin/edit?id=' + ${user.id} + '\')'">
                                 Edit
                             </button>
                         </td>
@@ -153,7 +154,7 @@
 <script>
     function deleteUser(id) {
         if (confirm('Вы уверены, что хотите удалить пользователя?')) {
-            fetch('/admin/delete?id=' + id, { method: 'GET' })
+            fetch('/admin/delete?id=' + id, {method: 'GET'})
                 .then(response => {
                     if (response.redirected) {
                         window.location.href = response.url;

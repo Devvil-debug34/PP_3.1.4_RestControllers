@@ -2,8 +2,6 @@
 <html xmlns:th="http://www.thymeleaf.org">
 
 
-
-
 <head>
     <meta charset="UTF-8">
     <title>User Information</title>
@@ -13,6 +11,7 @@
             margin: 0;
             padding: 0;
         }
+
         .header {
             background-color: #333;
             color: white;
@@ -21,6 +20,7 @@
             justify-content: space-between;
             align-items: center;
         }
+
         .sidebar {
             width: 200px;
             background-color: #f4f4f4;
@@ -30,10 +30,12 @@
             bottom: 0;
             left: 0;
         }
+
         .content {
             margin-left: 220px;
             padding: 20px;
         }
+
         .logout-button {
             background-color: #ff6347;
             color: white;
@@ -41,6 +43,7 @@
             padding: 10px 20px;
             cursor: pointer;
         }
+
         .logout-button:hover {
             background-color: #ff4500;
         }
@@ -88,7 +91,8 @@
 <!---------------Sidebar (справа)--------------------------------------------------------------------------->
 
 <!-- Правая панель -->
-<div class="content-area" style="margin-left: 200px; background-color: #f8f9fa; min-height: calc(100vh - 56px); padding: 30px;">
+<div class="content-area"
+     style="margin-left: 200px; background-color: #f8f9fa; min-height: calc(100vh - 56px); padding: 30px;">
     <h1 class="display-5">User information-page</h1>
 
 
@@ -122,8 +126,7 @@
 </div>
 
 
-
-<!-- jQuery, Popper.js и Bootstrap JS (в этом порядке) -->
+<!-- jQuery, Popper.js и Bootstrap JS -->
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
         integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
         crossorigin="anonymous"></script>

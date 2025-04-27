@@ -6,7 +6,7 @@
 </div>
 <div class="modal-body">
   <form th:action="@{/admin/add}" method="post" th:object="${user}">
-    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
 
     <div class="form-group">
       <label>First name</label>
@@ -33,7 +33,7 @@
       <select name="roles" class="form-control form-control-sm" multiple id="roles" style="height: 60px;" required>
         <option th:each="role : ${allRoles}"
                 th:value="${role.name}"
-        th:text="${role.name}"></option>
+                th:text="${role.name}"></option>
       </select>
     </div>
 

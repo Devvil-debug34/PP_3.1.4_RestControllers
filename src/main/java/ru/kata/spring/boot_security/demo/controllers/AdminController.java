@@ -44,14 +44,12 @@ public class AdminController {
                           @RequestParam("roles") List<String> roleNames) {
         Set<Role> roles = new HashSet<>();
         for (String roleName : roleNames) {
-            roles.add(roleService.findByName(roleName)); // Найти роли по ИМЕНИ
+            roles.add(roleService.findByName(roleName));
         }
-        user.setRoles(roles); // Установить роли в юзера
-        userService.add(user); // Сохранить юзера
+        user.setRoles(roles);
+        userService.add(user);
         return "redirect:/admin";
     }
-
-
 
 
     @GetMapping("/edit")
@@ -67,10 +65,10 @@ public class AdminController {
         if (result.hasErrors()) {
             return "userEditAdmin";
         }
-        // email check
+
         Optional<User> userWithSameEmail = userService.findByEmail(user.getEmail());
         if (userWithSameEmail.isPresent() && userWithSameEmail.get().getId() != id) {
-            //  email not
+
             result.rejectValue("email", "error.user", "Этот email уже используется другим пользователем.");
             return "userEditAdmin";
         }
