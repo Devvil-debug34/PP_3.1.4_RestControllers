@@ -20,12 +20,10 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Pattern(regexp = "^[А-ЯA-Z][а-яa-z]+$", message = "неккоректный ввод Имени")
     @NotEmpty(message = "Имя не может быть пустым")
     @Column(name = "first_Name")
     private String firstName;
 
-    @Pattern(regexp = "^[А-ЯA-Z][а-яa-z]+$", message = "неккоректный ввод Фамилии")
     @NotEmpty(message = "Фамилия не может быть пустым")
     @Column(name = "last_name")
     private String lastName;
