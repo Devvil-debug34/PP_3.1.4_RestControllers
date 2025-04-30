@@ -1,10 +1,15 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-
-
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>User Information</title>
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet"
+          href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+          crossorigin="anonymous">
+
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -48,30 +53,21 @@
             background-color: #ff4500;
         }
     </style>
-
-
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet"
-          href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
-          crossorigin="anonymous">
-
 </head>
 <body>
 
-
+<!-- Header -->
 <nav class="navbar justify-content-between px-4" style="background-color: #1e1e1e;">
     <span class="navbar-text text-light">
-        <span style="font-weight: 650;" th:text="${user.getEmail()}">user@mail.ru</span>
-        with roles:
-        <span th:text="${user.getRoles()}">USER</span>
+        Email: <span id="header-email" style="font-weight: 650;">Loading...</span>
+        with roles: <span id="header-roles">Loading...</span>
     </span>
-    <a href="/logout" class="text-muted" style="text-decoration: none;">
+    <a href="/logout" class="text-muted" style="text-decoration: none; color: white;">
         Logout
     </a>
 </nav>
 
-<!-- Sidebar (слева) --------------------------------------------------------------------->
+<!-- Sidebar слева -->
 <div class="d-flex flex-column bg-white border-right"
      style="width: 200px; height: 100vh; position: fixed; top: 56px; left: 0; box-shadow: 1px 0 5px rgba(0,0,0,0.1);">
 
@@ -88,19 +84,15 @@
     </div>
 </div>
 
-<!---------------Sidebar (справа)--------------------------------------------------------------------------->
-
-<!-- Правая панель -->
+<!-- Основной контент -->
 <div class="content-area"
      style="margin-left: 200px; background-color: #f8f9fa; min-height: calc(100vh - 56px); padding: 30px;">
     <h1 class="display-5">User information-page</h1>
-
 
     <div class="card mt-4">
         <div class="card-header" style="padding-top: 0.55rem; padding-bottom: 0.45rem; padding-left: 1.5rem;">
             <h5 class="fw-semibold mb-0">About user</h5>
         </div>
-
 
         <div class="card-body p-0">
             <table class="table table-striped">
@@ -114,17 +106,18 @@
                 </tr>
                 </thead>
                 <tbody>
-                <td th:text="${user.getId()}">1</td>
-                <td th:text="${user.getFirstName()}">user</td>
-                <td th:text="${user.getLastName()}">user</td>
-                <td th:text="${user.getEmail()}">user@mail.ru</td>
-                <td th:text="${user.getRoles()}">USER</td>
+                <tr>
+                    <td id="userId">Loading...</td>
+                    <td id="userFirstName">Loading...</td>
+                    <td id="userLastName">Loading...</td>
+                    <td id="userEmail">Loading...</td>
+                    <td id="userRoles">Loading...</td>
+                </tr>
                 </tbody>
             </table>
         </div>
     </div>
 </div>
-
 
 <!-- jQuery, Popper.js и Bootstrap JS -->
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
@@ -137,6 +130,8 @@
         integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
         crossorigin="anonymous"></script>
 
+<!-- Подключение JS -->
+<script src="/js/user.js"></script>
+
 </body>
 </html>
-

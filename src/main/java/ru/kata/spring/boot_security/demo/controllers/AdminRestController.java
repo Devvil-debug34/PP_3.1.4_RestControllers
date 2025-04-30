@@ -2,7 +2,6 @@ package ru.kata.spring.boot_security.demo.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -16,12 +15,12 @@ import java.util.*;
 
 @Controller
 @RequestMapping("/admin")
-public class AdminController {
+public class AdminRestController {
     private final UserService userService;
     private final RoleService roleService;
 
     @Autowired
-    private AdminController(UserService userService, RoleService roleService) {
+    private AdminRestController(UserService userService, RoleService roleService) {
         this.userService = userService;
         this.roleService = roleService;
     }
