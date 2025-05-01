@@ -1,83 +1,95 @@
 package ru.kata.spring.boot_security.demo.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
-import org.springframework.validation.BindingResult;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.kata.spring.boot_security.demo.models.Role;
 import ru.kata.spring.boot_security.demo.models.User;
+import ru.kata.spring.boot_security.demo.models.UserDTO;
 import ru.kata.spring.boot_security.demo.services.RoleService;
 import ru.kata.spring.boot_security.demo.services.UserService;
 
-import javax.validation.Valid;
-import java.util.*;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
-@Controller
-@RequestMapping("/admin")
+
+@RestController
+@RequestMapping("/api/admin")
 public class AdminRestController {
+
     private final UserService userService;
     private final RoleService roleService;
 
     @Autowired
-    private AdminRestController(UserService userService, RoleService roleService) {
+    public AdminRestController(UserService userService, RoleService roleService) {
         this.userService = userService;
         this.roleService = roleService;
     }
 
-    @GetMapping
-    public String listUsers(ModelMap model) {
-        model.addAttribute("users", userService.findAll());
-        return "userListAdmin";
+    @GetMapping("/users")
+    public List<UserDTO> getAllUsers() {
+        return userService.findAll().stream()
+                .map(UserDTO::fromUser)
+                .collect(Collectors.toList());
     }
 
-    @GetMapping("/add")
-    public String addUserForm(ModelMap model) {
-        model.addAttribute("user", new User());
-        model.addAttribute("allRoles", roleService.findAll());
-        return "userAddAdmin";
+    @GetMapping("/users/{id}")
+    public ResponseEntity<UserDTO> getUserById(@PathVariable int id) {
+        Optional<User> userOpt = Optional.ofNullable(userService.findById(id));
+        return userOpt.map(u -> ResponseEntity.ok(UserDTO.fromUser(u)))
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @PostMapping("/add")
-    public String addUser(@ModelAttribute("user") User user,
-                          @RequestParam("roles") List<String> roleNames) {
-        Set<Role> roles = new HashSet<>();
-        for (String roleName : roleNames) {
-            roles.add(roleService.findByName(roleName));
+    @GetMapping("/roles")
+    public List<String> getAllRoles() {
+        return roleService.findAll().stream()
+                .map(Role::getName)
+                .collect(Collectors.toList());
+    }
+
+    @PostMapping("/users")
+    public ResponseEntity<UserDTO> createUser(@RequestBody UserDTO userDTO) {
+        if (userDTO.getPassword() == null || userDTO.getPassword().trim().isEmpty()) {
+            return ResponseEntity.badRequest().build();
         }
+
+        Set<Role> roles = userDTO.getRoles().stream()
+                .map(roleService::findByName)
+                .collect(Collectors.toSet());
+
+        User user = new User();
+        user.setFirstName(userDTO.getFirstName());
+        user.setLastName(userDTO.getLastName());
+        user.setEmail(userDTO.getEmail());
+        user.setPassword(userDTO.getPassword());
         user.setRoles(roles);
+
         userService.add(user);
-        return "redirect:/admin";
+        return ResponseEntity.ok(UserDTO.fromUser(user));
     }
 
-
-    @GetMapping("/edit")
-    public String editUserForm(@RequestParam("id") int id, ModelMap model) {
+    @PutMapping("/users/{id}")
+    public ResponseEntity<UserDTO> updateUser(@PathVariable int id, @RequestBody UserDTO userDTO) {
         User user = userService.findById(id);
-        model.addAttribute("user", user);
-        model.addAttribute("allRoles", roleService.findAll());
-        return "userEditAdmin";
-    }
 
-    @PostMapping("/edit")
-    public String editUser(@RequestParam("id") int id, @ModelAttribute("user") @Valid User user, BindingResult result) {
-        if (result.hasErrors()) {
-            return "userEditAdmin";
-        }
+        user.setFirstName(userDTO.getFirstName());
+        user.setLastName(userDTO.getLastName());
+        user.setEmail(userDTO.getEmail());
 
-        Optional<User> userWithSameEmail = userService.findByEmail(user.getEmail());
-        if (userWithSameEmail.isPresent() && userWithSameEmail.get().getId() != id) {
+        Set<Role> roles = userDTO.getRoles().stream()
+                .map(roleService::findByName)
+                .collect(Collectors.toSet());
+        user.setRoles(roles);
 
-            result.rejectValue("email", "error.user", "Этот email уже используется другим пользователем.");
-            return "userEditAdmin";
-        }
         userService.update(id, user);
-        return "redirect:/admin";
+        return ResponseEntity.ok(UserDTO.fromUser(user));
     }
 
-    @GetMapping("/delete")
-    public String deleteUser(@RequestParam("id") int id) {
+    @DeleteMapping("/users/{id}")
+    public ResponseEntity<Void> deleteUser(@PathVariable int id) {
         userService.delete(id);
-        return "redirect:/admin";
+        return ResponseEntity.noContent().build();
     }
 }
