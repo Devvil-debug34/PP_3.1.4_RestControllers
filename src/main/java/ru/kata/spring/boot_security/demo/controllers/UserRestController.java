@@ -5,6 +5,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import ru.kata.spring.boot_security.demo.mappers.UserMapper;
 import ru.kata.spring.boot_security.demo.models.User;
 import ru.kata.spring.boot_security.demo.models.UserDTO;
 
@@ -12,11 +13,16 @@ import ru.kata.spring.boot_security.demo.models.UserDTO;
 @RequestMapping("/user")
 public class UserRestController {
 
+    private final UserMapper userMapper;
+
+    public UserRestController(UserMapper userMapper) {
+        this.userMapper = userMapper;
+    }
 
     @GetMapping("/profile_user")
     public UserDTO userPage() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User user = (User) authentication.getPrincipal();
-        return UserDTO.fromUser(user);
+        return userMapper.toDto(user);
     }
 }

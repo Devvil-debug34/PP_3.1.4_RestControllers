@@ -1,7 +1,6 @@
 package ru.kata.spring.boot_security.demo.models;
 
 import java.util.Set;
-import java.util.stream.Collectors;
 
 public class UserDTO {
     private int id;
@@ -23,20 +22,14 @@ public class UserDTO {
         this.password = password;
     }
 
-    public static UserDTO fromUser(User user) {
-        UserDTO dto = new UserDTO();
-        dto.setId(user.getId());
-        dto.setFirstName(user.getFirstName());
-        dto.setLastName(user.getLastName());
-        dto.setEmail(user.getEmail());
-        dto.setRoles(user.getRoles().stream()
-                .map(Role::getName)
-                .collect(Collectors.toSet()));
-        return dto;
-    }
+    // Геттеры и сеттеры
 
     public Set<String> getRoles() {
         return roles;
+    }
+
+    public void setRoles(Set<String> roles) {
+        this.roles = roles;
     }
 
     public String getPassword() {
@@ -46,11 +39,6 @@ public class UserDTO {
     public void setPassword(String password) {
         this.password = password;
     }
-
-    public void setRoles(Set<String> roles) {
-        this.roles = roles;
-    }
-
 
     public String getEmail() {
         return email;
